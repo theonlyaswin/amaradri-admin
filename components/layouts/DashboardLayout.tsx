@@ -44,7 +44,7 @@ export default function DashboardLayout({
       <header className="lg:hidden bg-white/95 backdrop-blur-sm border-b border-gray-200 px-4 py-4 sticky top-0 z-50 rounded-b-3xl">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <Image src="/logo1.svg" alt="logo" width={120} height={100} />
+            <Image src="/logo.svg" alt="logo" width={120} height={100} />
           </div>
           <Button 
             variant="ghost" 
@@ -114,7 +114,7 @@ export default function DashboardLayout({
               >
                 <Avatar className="w-10 h-10">
                   <AvatarImage src={user?.photoURL || ''} />
-                  <AvatarFallback className="bg-gradient-to-br from-orange-400 to-orange-600 text-white font-bold text-sm">
+                  <AvatarFallback className="bg-gradient-to-br from-gray-600 to-black text-white font-bold text-sm">
                     {user?.email ? user.email.charAt(0).toUpperCase() : 'U'}
                   </AvatarFallback>
                 </Avatar>

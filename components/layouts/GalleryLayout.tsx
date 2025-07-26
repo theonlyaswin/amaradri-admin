@@ -311,7 +311,7 @@ export default function GalleryLayout() {
       </DndContext>
       {/* Floating Save Button */}
       <Button
-        className="fixed bottom-8 right-8 z-50 rounded-xl px-8 py-4 shadow-lg text-lg font-semibold bg-blue-500 hover:bg-blue-600 text-white"
+        className="fixed bottom-8 right-8 z-50 rounded-xl px-8 py-4 shadow-lg text-lg font-semibold bg-black hover:bg-gray-700 text-white"
         size="lg"
         onClick={() => setSaveDialogOpen(true)}
         disabled={!canSave || uploading}
@@ -332,7 +332,7 @@ export default function GalleryLayout() {
             <Button variant="outline" onClick={() => setSaveDialogOpen(false)} disabled={uploading}>
               Cancel
             </Button>
-            <Button className="bg-blue-500 hover:bg-blue-600 text-white" onClick={handleSave} disabled={uploading || !canSave}>
+            <Button className="bg-black hover:bg-gray-700 text-white" onClick={handleSave} disabled={uploading || !canSave}>
               {uploading ? `Uploading...${uploadProgress !== null ? ` (${uploadProgress}%)` : ''}` : 'Yes, Save'}
             </Button>
           </DialogFooter>

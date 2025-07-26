@@ -1,6 +1,6 @@
 import { initializeApp, getApps } from 'firebase/app';
 import { getStorage } from 'firebase/storage';
-import { getDatabase, get, ref as dbRef } from 'firebase/database';
+import { getDatabase, get, ref as dbRef, set } from 'firebase/database';
 import { getDownloadURL, ref as storageRef } from 'firebase/storage';
 import { getAuth, GoogleAuthProvider } from 'firebase/auth';
 
@@ -39,4 +39,99 @@ export async function fetchGalleryImagesOrdered() {
             })
     );
     return images;
+}
+
+// Function to generate a URL-friendly string
+function generateUrlFriendlyId(title: string): string {
+    const cleanTitle = title.toLowerCase().replace(/\s+/g, '');
+    const randomString = Math.random().toString(36).substring(2, 8);
+    return `${cleanTitle}-${randomString}`;
+}
+
+// Save client gallery details
+export async function saveClientGallery(data: {
+    name: string;
+    driveLink: string;
+    title: string;
+}) {
+    try {
+        const galleryRef = dbRef(database, 'client-gallery');
+        const url = generateUrlFriendlyId(data.name);
+
+        // Get existing galleries to check for duplicates
+        const snapshot = await get(galleryRef);
+        const galleries = snapshot.val() || {};
+
+        // Check if name already exists
+        const nameExists = Object.values(galleries).some((gallery: any) =>
+            gallery.name.toLowerCase() === data.name.toLowerCase()
+        );
+
+        if (nameExists) {
+            throw new Error('A gallery with this name already exists');
+        }
+
+        // Create new gallery entry
+        const newGallery = {
+            ...data,
+            url,
+            status: 'live',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+        };
+
+        // Save to database
+        await set(dbRef(database, `client-gallery/${data.name}`), newGallery);
+        return { success: true, url };
+    } catch (error) {
+        console.error('Error saving client gallery:', error);
+        throw error;
+    }
+}
+
+// Type for client gallery data
+export interface ClientGallery {
+    name: string;
+    driveLink: string;
+    title: string;
+    url: string;
+    status: 'live' | 'hidden';
+    createdAt: string;
+    updatedAt: string;
+}
+
+// Fetch all client galleries
+export async function fetchClientGalleries(): Promise<ClientGallery[]> {
+    try {
+        const galleryRef = dbRef(database, 'client-gallery');
+        const snapshot = await get(galleryRef);
+        const galleries = snapshot.val() || {};
+
+        // Convert object to array and sort by createdAt
+        return Object.values(galleries).map((gallery: any): ClientGallery => ({
+            name: gallery.name,
+            driveLink: gallery.driveLink,
+            title: gallery.title,
+            url: gallery.url,
+            status: gallery.status,
+            createdAt: gallery.createdAt,
+            updatedAt: gallery.updatedAt
+        })).sort((a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+    } catch (error) {
+        console.error('Error fetching client galleries:', error);
+        throw error;
+    }
+}
+
+// Delete client gallery
+export async function deleteClientGallery(clientName: string): Promise<void> {
+    try {
+        const galleryRef = dbRef(database, `client-gallery/${clientName}`);
+        await set(galleryRef, null);
+    } catch (error) {
+        console.error('Error deleting client gallery:', error);
+        throw error;
+    }
 } 
