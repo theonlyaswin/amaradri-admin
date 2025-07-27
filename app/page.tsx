@@ -49,7 +49,7 @@ export default function Home() {
             placeholder="Email"
             value={email}
             onChange={e => setEmail(e.target.value)}
-            className="border rounded px-3 py-2"
+            className="border rounded-md px-3 py-2"
             required
           />
           <input
@@ -57,10 +57,10 @@ export default function Home() {
             placeholder="Password"
             value={password}
             onChange={e => setPassword(e.target.value)}
-            className="border rounded px-3 py-2"
+            className="border rounded-md px-3 py-2"
             required
           />
-          <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded">Sign in</button>
+          <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded-md">Sign in</button>
         </form>
         {error && <div className="mt-4 text-red-500">{error}</div>}
       </div>
