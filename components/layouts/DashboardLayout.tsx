@@ -28,9 +28,14 @@ export default function DashboardLayout({
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (firebaseUser) => {
       setUser(firebaseUser);
+      // Redirect to home page when user signs out (becomes null)
+      // Only redirect if we're not already on the home page
+      if (!firebaseUser && pathname !== '/') {
+        router.push('/');
+      }
     });
     return () => unsub();
-  }, []);
+  }, [router, pathname]);
 
 
   // If on base url, do not render sidebar/layout, just children
